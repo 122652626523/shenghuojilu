@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>个人自用数据采集</title>
+  <!-- 引入 Tailwind CSS 快速样式库 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen p-4 md:p-8 font-sans">
+
+  <!-- 响应式容器：手机端占满，电脑端限制最大宽度并居中 -->
+  <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+    <h1 class="text-2xl font-bold text-slate-800 mb-6 text-center">📝 快速记录面板</h1>
+
+    <form id="recordForm" class="space-y-4">
+      <!-- 字段 1：名称/标题 -->
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">记录标题</label>
+        <input type="text" id="title" required placeholder="输入标题..." 
+               class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none text-base">
+      </div>
+
+      <!-- 字段 2 与 3：手机端上下排列，电脑端并排（md:grid-cols-2） -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">分类</label>
+          <select id="category" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none text-base bg-white">
+            <option value="note">随手记</option>
+            <option value="task">待办事项</option>
+            <option value="data">数据归档</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">重要程度</label>
+          <select id="priority" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none text-base bg-white">
+            <option value="normal">普通</option>
+            <option value="high">紧急</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 字段 4：多行文本 -->
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">详细内容</label>
+        <textarea id="content" rows="4" placeholder="输入详细内容..." 
+                  class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none text-base"></textarea>
+      </div>
+
+      <!-- 提交按钮 -->
+      <button type="submit" 
+              class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-sm transition duration-150 active:scale-[0.99]">
+        保存记录
+      </button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('recordForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const formData = {
+        title: document.getElementById('title').value,
+        category: document.getElementById('category').value,
+        priority: document.getElementById('priority').value,
+        content: document.getElementById('content').value,
+        timestamp: new Date().toISOString()
+      };
+
+      console.log('即将提交到后端的数据：', formData);
+      alert('保存成功！数据：' + JSON.stringify(formData));
+    });
+  </script>
+</body>
+</html>
