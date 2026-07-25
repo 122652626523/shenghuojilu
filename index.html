@@ -1,167 +1,6 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>生活记录 - 饮食与库存管理</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    :root {
-      --primary: #10b981;
-      --primary-dark: #059669;
-      --bg: #f3f4f6;
-      --card-bg: #ffffff;
-      --text: #1f2937;
-      --text-light: #6b7280;
-      --danger: #ef4444;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 40px; }
-    header { background: var(--primary); color: white; padding: 16px; text-align: center; font-size: 1.25rem; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    
-    /* 底部/顶部导航标签 */
-    .tabs { display: flex; background: white; border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 10; }
-    .tab-btn { flex: 1; padding: 12px 8px; text-align: center; font-size: 0.9rem; background: none; border: none; cursor: pointer; color: var(--text-light); border-bottom: 3px solid transparent; font-weight: 500; }
-    .tab-btn.active { color: var(--primary-dark); border-bottom-color: var(--primary-dark); font-weight: bold; }
-    
-    .container { max-width: 600px; margin: 16px auto; padding: 0 12px; }
-    .panel { display: none; }
-    .panel.active { display: block; }
-    
-    .card { background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    .card-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-    
-    .form-group { margin-bottom: 12px; }
-    label { display: block; font-size: 0.85rem; color: var(--text-light); margin-bottom: 4px; }
-    input, select { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.95rem; outline: none; }
-    input:focus, select:focus { border-color: var(--primary); }
-    
-    .row { display: flex; gap: 8px; }
-    .row > * { flex: 1; }
-    
-    button.btn-primary { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 8px; }
-    button.btn-primary:active { background: var(--primary-dark); }
-    
-    /* 列表与表格样式 */
-    .item-list { list-style: none; }
-    .item-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f3f4f6; }
-    .item-row:last-child { border-bottom: none; }
-    .item-info { font-size: 0.95rem; }
-    .item-sub { font-size: 0.8rem; color: var(--text-light); margin-top: 2px; }
-    .badge { background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; }
-    .badge-cost { background: #fef3c7; color: #92400e; }
-    
-    .btn-del { color: var(--danger); background: none; border: none; cursor: pointer; font-size: 0.85rem; }
-    
-    /* 动态添加食材行 */
-    .ingredient-input-row { display: flex; gap: 6px; margin-bottom: 8px; align-items: center; }
-    .btn-remove-row { background: #fee2e2; color: #dc2626; border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: bold; cursor: pointer; }
-    .btn-add-row { background: #f3f4f6; color: var(--text); border: 1px dashed #d1d5db; padding: 8px; border-radius: 8px; width: 100%; cursor: pointer; font-size: 0.85rem; margin-bottom: 12px; }
-  </style>
-</head>
-<body>
-
-  <header>🥗 生活记录 - 饮食与库存</header>
-
-  <!-- 顶部导航 -->
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('diet')">🍽️ 今日饮食</button>
-    <button class="tab-btn" onclick="switchTab('inventory')">🛒 买菜/库存</button>
-    <button class="tab-btn" onclick="switchTab('recipes')">📖 私人菜谱</button>
-    <button class="tab-btn" onclick="switchTab('logs')">📊 饮食日志</button>
-  </div>
-
-  <div class="container">
-
-    <!-- 板块 1：今日饮食 -->
-    <div id="panel-diet" class="panel active">
-      <div class="card">
-        <div class="card-title">记录一餐</div>
-        <div class="form-group">
-          <label>餐别</label>
-          <select id="diet-meal-type">
-            <option value="早餐">早餐</option>
-            <option value="午餐" selected>午餐</option>
-            <option value="晚餐">晚餐</option>
-            <option value="加餐">加餐/夜宵</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>快捷快捷导入菜谱（可选）</label>
-          <select id="diet-recipe-select" onchange="loadRecipeToDiet()">
-            <option value="">-- 选择菜谱或自由填写 --</option>
-          </select>
-        </div>
-
-        <label>食用食材与克数</label>
-        <div id="diet-items-container"></div>
-        <button class="btn-add-row" onclick="addDietItemRow()">+ 添加食材</button>
-
-        <button class="btn-primary" onclick="submitDietLog()">提交并扣除库存</button>
-      </div>
-    </div>
-
-    <!-- 板块 2：买菜 / 库存管理 -->
-    <div id="panel-inventory" class="panel">
-      <div class="card">
-        <div class="card-title">🛒 买菜入库</div>
-        <div class="form-group">
-          <label>食材名称</label>
-          <input type="text" id="inv-name" placeholder="例如：番茄、猪肉、鸡蛋">
-        </div>
-        <div class="row">
-          <div class="form-group">
-            <label>购买重量 (克)</label>
-            <input type="number" id="inv-amount" placeholder="500">
-          </div>
-          <div class="form-group">
-            <label>总花费 (元)</label>
-            <input type="number" id="inv-price" step="0.01" placeholder="12.5">
-          </div>
-        </div>
-        <button class="btn-primary" onclick="addInventory()">买菜入库</button>
-      </div>
-
-      <div class="card">
-        <div class="card-title">📦 当前剩余库存</div>
-        <ul id="inventory-list" class="item-list">加载中...</ul>
-      </div>
-    </div>
-
-    <!-- 板块 3：私人菜谱 -->
-    <div id="panel-recipes" class="panel">
-      <div class="card">
-        <div class="card-title">📖 新建菜谱</div>
-        <div class="form-group">
-          <label>菜谱名称</label>
-          <input type="text" id="recipe-name" placeholder="例如：番茄炒蛋">
-        </div>
-        <label>所需食材及标准克数</label>
-        <div id="recipe-items-container"></div>
-        <button class="btn-add-row" onclick="addRecipeItemRow()">+ 添加食材配方</button>
-        <button class="btn-primary" onclick="saveRecipe()">保存菜谱</button>
-      </div>
-
-      <div class="card">
-        <div class="card-title">已有菜谱</div>
-        <ul id="recipe-list" class="item-list">加载中...</ul>
-      </div>
-    </div>
-
-    <!-- 板块 4：饮食日志 -->
-    <div id="panel-logs" class="panel">
-      <div class="card">
-        <div class="card-title">📜 历史饮食记录</div>
-        <ul id="log-list" class="item-list">加载中...</ul>
-      </div>
-    </div>
-
-  </div>
-
-  <script>
+<script>
     // ----------------------------------------------------
-    // ⚠️ 配置你的 Supabase 凭证
+    // ⚠️ 请务必确保这里的 SUPABASE_KEY 已经替换为你真实的 anon key 字符串！
     // ----------------------------------------------------
     const SUPABASE_URL = 'https://oxaagpiaiieiavmrtzkq.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_wUmuXR2Rub4-IEDidKTkrA_Pd-jlsj5';
@@ -195,7 +34,10 @@
     // ====================================================
     async function refreshInventory() {
       const { data, error } = await db.from('inventory').select('*').order('id', { ascending: false });
-      if (error) return console.error('获取库存失败:', error);
+      if (error) {
+        console.error('获取库存失败:', error);
+        return;
+      }
       inventoryData = data || [];
 
       const listEl = document.getElementById('inventory-list');
@@ -230,26 +72,34 @@
         return;
       }
 
-      // 检查是否已有该食材，计算加权平均单价
       const existing = inventoryData.find(i => i.name === name);
       let newAmount = amountG;
       let newPricePerG = totalPrice / amountG;
+      let err = null;
 
       if (existing) {
         const oldTotalCost = (existing.amount_g || 0) * (existing.price_per_g || 0);
         newAmount = existing.amount_g + amountG;
         newPricePerG = (oldTotalCost + totalPrice) / newAmount;
 
-        await db.from('inventory').update({
+        const res = await db.from('inventory').update({
           amount_g: newAmount,
           price_per_g: newPricePerG
         }).eq('id', existing.id);
+        err = res.error;
       } else {
-        await db.from('inventory').insert([{
+        const res = await db.from('inventory').insert([{
           name: name,
           amount_g: newAmount,
           price_per_g: newPricePerG
         }]);
+        err = res.error;
+      }
+
+      if (err) {
+        alert('买菜入库失败，数据库报错：' + err.message);
+        console.error(err);
+        return;
       }
 
       document.getElementById('inv-name').value = '';
@@ -261,8 +111,9 @@
 
     async function deleteInventory(id) {
       if (confirm('确定要从库存中删除该食材吗？')) {
-        await db.from('inventory').delete().eq('id', id);
-        refreshInventory();
+        const { error } = await db.from('inventory').delete().eq('id', id);
+        if (error) alert('删除失败：' + error.message);
+        else refreshInventory();
       }
     }
 
@@ -301,7 +152,8 @@
 
       const { error } = await db.from('recipes').insert([{ name, ingredients }]);
       if (error) {
-        alert('保存失败，可能菜谱名称已存在！');
+        alert('保存失败，真实报错：' + error.message);
+        console.error(error);
       } else {
         alert('菜谱保存成功！');
         document.getElementById('recipe-name').value = '';
@@ -312,7 +164,11 @@
     }
 
     async function refreshRecipes() {
-      const { data } = await db.from('recipes').select('*').order('id', { ascending: false });
+      const { data, error } = await db.from('recipes').select('*').order('id', { ascending: false });
+      if (error) {
+        console.error('获取菜谱失败:', error);
+        return;
+      }
       recipesData = data || [];
 
       const listEl = document.getElementById('recipe-list');
@@ -326,7 +182,6 @@
         </li>
       `).join('');
 
-      // 更新饮食记录页面中的菜谱下拉框
       const select = document.getElementById('diet-recipe-select');
       select.innerHTML = '<option value="">-- 选择菜谱或自由填写 --</option>' + 
         recipesData.map(r => `<option value="${r.name}">${r.name}</option>`).join('');
@@ -334,17 +189,16 @@
 
     async function deleteRecipe(id) {
       if (confirm('确定要删除该菜谱吗？')) {
-        await db.from('recipes').delete().eq('id', id);
-        refreshRecipes();
+        const { error } = await db.from('recipes').delete().eq('id', id);
+        if (error) alert('删除失败：' + error.message);
+        else refreshRecipes();
       }
     }
 
     // ====================================================
     // 3. 今日饮食板块 (Diet Logs & Deductions)
     // ====================================================
-    function updateSelectDropdowns() {
-      // 可以在需要时更新所有下拉框
-    }
+    function updateSelectDropdowns() {}
 
     function addDietItemRow(name = '', amount = '') {
       const container = document.getElementById('diet-items-container');
@@ -392,7 +246,6 @@
         const ingAmount = parseFloat(amountInputs[i].value);
 
         if (ingName && !isNaN(ingAmount) && ingAmount > 0) {
-          // 寻找库存
           const invItem = inventoryData.find(item => item.name === ingName);
           const pricePerG = invItem ? (invItem.price_per_g || 0) : 0;
           const itemCost = ingAmount * pricePerG;
@@ -406,7 +259,6 @@
           totalWeightG += ingAmount;
           totalCost += itemCost;
 
-          // 扣除库存
           if (invItem) {
             const updatedAmount = Math.max(0, invItem.amount_g - ingAmount);
             await db.from('inventory').update({ amount_g: updatedAmount }).eq('id', invItem.id);
@@ -416,8 +268,7 @@
 
       if (usedItems.length === 0) return alert('请至少填写一项食用食材！');
 
-      // 写入日志
-      await db.from('diet_logs').insert([{
+      const { error } = await db.from('diet_logs').insert([{
         meal_type: mealType,
         recipe_name: recipeSelect || '自由搭配',
         total_weight_g: totalWeightG,
@@ -425,9 +276,14 @@
         items: usedItems
       }]);
 
+      if (error) {
+        alert('提交饮食记录失败，真实报错：' + error.message);
+        console.error(error);
+        return;
+      }
+
       alert(`记录成功！\n本餐总重量：${totalWeightG} 克\n食材花费：¥${totalCost.toFixed(2)} 元\n（库存已自动扣除）`);
 
-      // 清空并刷新
       document.getElementById('diet-items-container').innerHTML = '';
       addDietItemRow();
       await refreshInventory();
@@ -438,7 +294,11 @@
     // 4. 饮食日志 (Logs)
     // ====================================================
     async function refreshLogs() {
-      const { data } = await db.from('diet_logs').select('*').order('id', { ascending: false }).limit(20);
+      const { data, error } = await db.from('diet_logs').select('*').order('id', { ascending: false }).limit(20);
+      if (error) {
+        console.error('获取日志失败:', error);
+        return;
+      }
       const logs = data || [];
 
       const listEl = document.getElementById('log-list');
@@ -466,5 +326,3 @@
       }).join('');
     }
   </script>
-</body>
-</html>
