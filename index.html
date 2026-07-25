@@ -1,17 +1,16 @@
 <script>
     // ----------------------------------------------------
-    // ⚠️ 请务必确保这里的 SUPABASE_KEY 已经替换为你真实的 anon key 字符串！
+    // ⚠️ 1. 请务必把下面的 SUPABASE_KEY 替换为你真实的 anon 密钥！
     // ----------------------------------------------------
     const SUPABASE_URL = 'https://oxaagpiaiieiavmrtzkq.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_wUmuXR2Rub4-IEDidKTkrA_Pd-jlsj5';
     
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // 全局内存数据
     let inventoryData = [];
     let recipesData = [];
 
-    // 初始化
+    // 初始化加载
     window.onload = async () => {
       await refreshInventory();
       await refreshRecipes();
@@ -20,7 +19,6 @@
       addRecipeItemRow();
     };
 
-    // 标签页切换
     function switchTab(tabName) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active'));
@@ -35,7 +33,7 @@
     async function refreshInventory() {
       const { data, error } = await db.from('inventory').select('*').order('id', { ascending: false });
       if (error) {
-        console.error('获取库存失败:', error);
+        alert('读取库存失败，请检查 Key 或数据库：\n' + error.message);
         return;
       }
       inventoryData = data || [];
@@ -58,8 +56,6 @@
           </div>
         </li>
       `).join('');
-
-      updateSelectDropdowns();
     }
 
     async function addInventory() {
@@ -97,8 +93,7 @@
       }
 
       if (err) {
-        alert('买菜入库失败，数据库报错：' + err.message);
-        console.error(err);
+        alert('【买菜入库失败】数据库报错：\n' + err.message);
         return;
       }
 
@@ -152,8 +147,7 @@
 
       const { error } = await db.from('recipes').insert([{ name, ingredients }]);
       if (error) {
-        alert('保存失败，真实报错：' + error.message);
-        console.error(error);
+        alert('【保存菜谱失败】数据库报错：\n' + error.message);
       } else {
         alert('菜谱保存成功！');
         document.getElementById('recipe-name').value = '';
@@ -165,10 +159,7 @@
 
     async function refreshRecipes() {
       const { data, error } = await db.from('recipes').select('*').order('id', { ascending: false });
-      if (error) {
-        console.error('获取菜谱失败:', error);
-        return;
-      }
+      if (error) return;
       recipesData = data || [];
 
       const listEl = document.getElementById('recipe-list');
@@ -196,10 +187,8 @@
     }
 
     // ====================================================
-    // 3. 今日饮食板块 (Diet Logs & Deductions)
+    // 3. 今日饮食板块 (Diet Logs)
     // ====================================================
-    function updateSelectDropdowns() {}
-
     function addDietItemRow(name = '', amount = '') {
       const container = document.getElementById('diet-items-container');
       const div = document.createElement('div');
@@ -277,12 +266,11 @@
       }]);
 
       if (error) {
-        alert('提交饮食记录失败，真实报错：' + error.message);
-        console.error(error);
+        alert('【提交饮食记录失败】数据库报错：\n' + error.message);
         return;
       }
 
-      alert(`记录成功！\n本餐总重量：${totalWeightG} 克\n食材花费：¥${totalCost.toFixed(2)} 元\n（库存已自动扣除）`);
+      alert(`记录成功！\n本餐总重量：${totalWeightG} 克\n食材花费：¥${totalCost.toFixed(2)} 元`);
 
       document.getElementById('diet-items-container').innerHTML = '';
       addDietItemRow();
@@ -295,10 +283,7 @@
     // ====================================================
     async function refreshLogs() {
       const { data, error } = await db.from('diet_logs').select('*').order('id', { ascending: false }).limit(20);
-      if (error) {
-        console.error('获取日志失败:', error);
-        return;
-      }
+      if (error) return;
       const logs = data || [];
 
       const listEl = document.getElementById('log-list');
