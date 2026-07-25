@@ -47,7 +47,7 @@
     .btn-complete { background: var(--primary); color: white; border: none; padding: 5px 10px; border-radius: 10px; font-size: 0.78rem; font-weight: bold; cursor: pointer; }
     .meal-add-btn { background: var(--primary-light); color: var(--primary); border: none; padding: 5px 10px; border-radius: 10px; font-size: 0.78rem; font-weight: bold; cursor: pointer; }
 
-    /* 食材列表（无小组，直列展示） */
+    /* 食材列表 */
     .food-ingredients-vertical { display: flex; flex-direction: column; gap: 8px; }
     .ing-item-line { font-size: 0.88rem; color: #374151; display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px dashed #f3f4f6; }
     .ing-item-line:last-child { border-bottom: none; }
@@ -55,20 +55,34 @@
     .ing-weight-input { width: 55px; padding: 3px 5px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.82rem; text-align: center; background: #fff; }
     .ing-cost-tag { color: var(--primary); font-weight: bold; font-size: 0.82rem; margin: 0 4px; }
 
-    /* 状态标签 */
-    .status-badge { font-size: 0.7rem; padding: 2px 6px; border-radius: 8px; font-weight: bold; }
-    .status-planned { background: #fef3c7; color: #92400e; }
-    .status-completed { background: #dcfce7; color: #166534; }
+    /* 📱 CSS Grid 网格对齐：解决标题与数据列错位问题 */
+    .inventory-grid-row {
+      display: grid;
+      grid-template-columns: 1fr 60px 60px 65px 85px;
+      align-items: center;
+      padding: 8px 4px;
+      font-size: 0.82rem;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .inventory-grid-row:last-child { border-bottom: none; }
 
-    /* 📱 手机端优化：统一表格头部头 */
-    .inventory-header-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; background: #f8fafc; border-radius: 8px; font-size: 0.75rem; color: var(--text-light); font-weight: bold; margin-bottom: 6px; }
-    .inventory-header-cols { display: flex; gap: 12px; width: 140px; justify-content: space-between; text-align: center; }
+    .inventory-header-grid {
+      display: grid;
+      grid-template-columns: 1fr 60px 60px 65px 85px;
+      align-items: center;
+      padding: 8px 4px;
+      background: #f8fafc;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      color: var(--text-light);
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
 
-    .item-numbers-row { display: flex; gap: 8px; align-items: center; font-size: 0.78rem; font-weight: bold; }
-    .num-actual { color: #0369a1; }
-    .num-planned { color: #92400e; }
-    .num-diff-plus { color: #15803d; }
-    .num-diff-minus { color: #b91c1c; }
+    .num-actual { color: #0369a1; font-weight: bold; }
+    .num-planned { color: #92400e; font-weight: bold; }
+    .num-diff-plus { color: #15803d; font-weight: bold; }
+    .num-diff-minus { color: #b91c1c; font-weight: bold; }
 
     /* 通用卡片 */
     .card { background: #fff; border-radius: 16px; padding: 14px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
@@ -80,8 +94,8 @@
     .row > * { flex: 1; }
 
     button.btn-primary { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 12px; font-size: 0.95rem; font-weight: bold; cursor: pointer; }
-    .btn-danger-sm { background: #fee2e2; color: #dc2626; border: none; padding: 2px 6px; border-radius: 6px; font-size: 0.72rem; cursor: pointer; }
-    .btn-warn-sm { background: #fef3c7; color: #b45309; border: none; padding: 4px 8px; border-radius: 8px; font-size: 0.75rem; cursor: pointer; }
+    .btn-danger-sm { background: #fee2e2; color: #dc2626; border: none; padding: 3px 6px; border-radius: 6px; font-size: 0.72rem; cursor: pointer; }
+    .btn-warn-sm { background: #fef3c7; color: #b45309; border: none; padding: 3px 6px; border-radius: 6px; font-size: 0.72rem; cursor: pointer; }
 
     /* 菜谱布局 */
     .recipe-header-bar { display: flex; gap: 8px; margin-bottom: 10px; }
@@ -122,10 +136,7 @@
     .btn-remove-row { background: #fee2e2; color: #dc2626; border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: bold; cursor: pointer; flex-shrink: 0; }
     .btn-add-row { background: #f3f4f6; color: var(--text); border: 1px dashed #d1d5db; padding: 8px; border-radius: 8px; width: 100%; cursor: pointer; font-size: 0.82rem; margin-bottom: 10px; }
 
-    .item-list { list-style: none; }
-    .item-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f3f4f6; }
-    .item-row:last-child { border-bottom: none; }
-    .item-sub { font-size: 0.75rem; color: var(--text-light); margin-top: 4px; }
+    .item-list { list-style: none; padding: 0; }
   </style>
 </head>
 <body>
@@ -142,8 +153,6 @@
 
     <!-- 1. 饮食日历 -->
     <div id="panel-diet" class="panel active">
-      
-      <!-- 日历头部与今日统计 -->
       <div class="calendar-bar">
         <div class="calendar-top-row">
           <div class="date-display">
@@ -163,7 +172,7 @@
             <div id="meal-stats-早餐"></div>
           </div>
           <div class="meal-header-actions">
-            <button class="btn-complete" onclick="markMealCompleted('早餐')">点击完成</button>
+            <button id="btn-complete-早餐" class="btn-complete" style="display:none;" onclick="markMealCompleted('早餐')">点击完成</button>
             <button class="meal-add-btn" onclick="openAddDietModal('早餐')">+ 添加</button>
           </div>
         </div>
@@ -178,7 +187,7 @@
             <div id="meal-stats-午餐"></div>
           </div>
           <div class="meal-header-actions">
-            <button class="btn-complete" onclick="markMealCompleted('午餐')">点击完成</button>
+            <button id="btn-complete-午餐" class="btn-complete" style="display:none;" onclick="markMealCompleted('午餐')">点击完成</button>
             <button class="meal-add-btn" onclick="openAddDietModal('午餐')">+ 添加</button>
           </div>
         </div>
@@ -193,7 +202,7 @@
             <div id="meal-stats-晚餐"></div>
           </div>
           <div class="meal-header-actions">
-            <button class="btn-complete" onclick="markMealCompleted('晚餐')">点击完成</button>
+            <button id="btn-complete-晚餐" class="btn-complete" style="display:none;" onclick="markMealCompleted('晚餐')">点击完成</button>
             <button class="meal-add-btn" onclick="openAddDietModal('晚餐')">+ 添加</button>
           </div>
         </div>
@@ -208,22 +217,20 @@
             <div id="meal-stats-加餐"></div>
           </div>
           <div class="meal-header-actions">
-            <button class="btn-complete" onclick="markMealCompleted('加餐')">点击完成</button>
+            <button id="btn-complete-加餐" class="btn-complete" style="display:none;" onclick="markMealCompleted('加餐')">点击完成</button>
             <button class="meal-add-btn" onclick="openAddDietModal('加餐')">+ 添加</button>
           </div>
         </div>
         <div id="meal-list-加餐">加载中...</div>
       </div>
-
     </div>
 
     <!-- 2. 买菜 / 库存 -->
     <div id="panel-inventory" class="panel">
-      
       <!-- 🛒 待采购区 -->
       <div class="card" id="purchase-card" style="display: none; border: 2px solid #fca5a5; background: #fff5f5;">
         <div class="card-title" style="color: #b91c1c;">
-          🛒 待采购区 (库存缺口/负数)
+          🛒 待采购区 (库存缺口)
         </div>
         <ul id="purchase-list" class="item-list"></ul>
       </div>
@@ -232,7 +239,7 @@
       <div class="card">
         <div class="card-title">🛒 买菜入库</div>
         <div class="form-group">
-          <label>食材名称（可直接选现有食材）</label>
+          <label>食材名称（可直接选择已有食材）</label>
           <input type="text" id="inv-name" placeholder="例如：番茄、猪肉、鸡蛋" list="inv-existing-options">
           <datalist id="inv-existing-options"></datalist>
         </div>
@@ -249,22 +256,20 @@
         <button class="btn-primary" onclick="addInventory()">买菜入库</button>
       </div>
 
-      <!-- 现有正常库存 -->
+      <!-- 现有正常库存 (网格对齐) -->
       <div class="card">
         <div class="card-title">
           <span>📦 现有正常库存</span>
           <input type="text" id="inventory-search" placeholder="🔍 搜索库存..." oninput="refreshInventoryUI()" style="width:120px; padding:4px 8px; font-size:0.78rem; border-radius:12px; border:1px solid #d1d5db;">
         </div>
 
-        <!-- 📱 手机端表格列头（只显示一次，避免每行冗余） -->
-        <div class="inventory-header-row">
-          <span>食材名称</span>
-          <div class="inventory-header-cols">
-            <span style="color:#0369a1;">现有</span>
-            <span style="color:#92400e;">预需</span>
-            <span style="color:#15803d;">结余</span>
-          </div>
-          <span>操作</span>
+        <!-- 📱 Grid 表头：列宽度与内容行 100% 对齐 -->
+        <div class="inventory-header-grid">
+          <span style="text-align:left;">食材名称</span>
+          <span style="text-align:center; color:#0369a1;">现有</span>
+          <span style="text-align:center; color:#92400e;">预需</span>
+          <span style="text-align:center; color:#15803d;">结余</span>
+          <span style="text-align:right;">操作</span>
         </div>
 
         <ul id="inventory-list" class="item-list">加载中...</ul>
@@ -464,7 +469,40 @@
       renderDietPage();
     }
 
-    // --- 1. 饮食大组渲染与逻辑 ---
+    // --- 🔥 核心算法：FIFO（先进先出）精准计算消费金额 ---
+    function calculateFifoCost(ingredientName, requiredGrams) {
+      if (!requiredGrams || requiredGrams <= 0) return 0;
+
+      // 找到该食材在库存中的所有有效批次，并按创建时间（id 升序）先入先出排序
+      const batches = inventoryData
+        .filter(i => i.name === ingredientName && i.amount_g > 0)
+        .sort((a, b) => a.id - b.id);
+
+      let remaining = requiredGrams;
+      let totalCost = 0;
+      let lastUnitPrice = 0;
+
+      for (const batch of batches) {
+        if (remaining <= 0) break;
+        const unitPrice = batch.price_per_g || 0;
+        lastUnitPrice = unitPrice;
+
+        const takeG = Math.min(remaining, batch.amount_g);
+        totalCost += takeG * unitPrice;
+        remaining -= takeG;
+      }
+
+      // 如果超出现有库存（缺口部分），按照最后一批（或历史单价）折算
+      if (remaining > 0) {
+        const fallbackBatch = inventoryData.find(i => i.name === ingredientName);
+        const fallbackPrice = lastUnitPrice || (fallbackBatch ? fallbackBatch.price_per_g : 0);
+        totalCost += remaining * fallbackPrice;
+      }
+
+      return totalCost;
+    }
+
+    // --- 1. 饮食页面渲染逻辑 ---
     async function refreshDietLogs() {
       const { data, error } = await db.from('diet_logs').select('*').order('id', { ascending: false });
       if (error) return;
@@ -479,63 +517,44 @@
 
       let dayTotalWeight = 0;
       let dayTotalCost = 0;
-      dayLogs.forEach(log => {
-        dayTotalWeight += (log.total_weight_g || 0);
-        dayTotalCost += (log.total_cost || 0);
-      });
-
-      const dayStatsEl = document.getElementById('day-summary-stats');
-      if (dayStatsEl) {
-        dayStatsEl.innerText = `今日: ${dayTotalWeight}g · ¥${dayTotalCost.toFixed(2)}`;
-      }
 
       meals.forEach(meal => {
         const container = document.getElementById(`meal-list-${meal}`);
         const statsContainer = document.getElementById(`meal-stats-${meal}`);
+        const btnComplete = document.getElementById(`btn-complete-${meal}`);
         const mealLogs = dayLogs.filter(log => log.meal_type === meal);
 
         let totalMealWeight = 0;
         let totalMealCost = 0;
-        mealLogs.forEach(log => {
-          totalMealWeight += (log.total_weight_g || 0);
-          totalMealCost += (log.total_cost || 0);
-        });
-
-        if (statsContainer) {
-          if (mealLogs.length > 0) {
-            statsContainer.innerHTML = `
-              <span class="meal-stats-badge">${totalMealWeight}g</span>
-              <span class="meal-stats-badge">¥${totalMealCost.toFixed(2)}</span>
-            `;
-          } else {
-            statsContainer.innerHTML = '';
-          }
-        }
+        let hasPlannedItems = false;
 
         if (mealLogs.length === 0) {
           container.innerHTML = '<div style="color:#9ca3af; font-size:0.8rem; padding:6px 0;">暂无饮食安排</div>';
+          if (statsContainer) statsContainer.innerHTML = '';
+          if (btnComplete) btnComplete.style.display = 'none'; // 无食材时隐藏“点击完成”
           return;
         }
 
-        // 把同一餐的所有食材聚合在同一个大组里列出
         let htmlStr = '<div class="food-ingredients-vertical">';
         mealLogs.forEach(log => {
           const isPlanned = log.status === 'planned';
+          if (isPlanned) hasPlannedItems = true;
+
           (log.items || []).forEach((item, itemIndex) => {
-            const itemCostStr = (item.cost || 0).toFixed(2);
+            // 实时使用 FIFO 动态重算单项费用（损耗后单价变高，这里会自动刷新为最新准确费用！）
+            const itemCost = calculateFifoCost(item.name, item.amount_g);
+            totalMealWeight += (item.amount_g || 0);
+            totalMealCost += itemCost;
+
             htmlStr += `
               <div class="ing-item-line">
                 <div style="display:flex; align-items:center; gap:6px;">
                   <strong style="font-size:0.9rem;">${item.name}</strong>
-                  <span class="status-badge ${isPlanned ? 'status-planned' : 'status-completed'}">
-                    ${isPlanned ? '预计划' : '已完成'}
-                  </span>
                 </div>
                 <div style="display:flex; align-items:center; gap:6px;">
-                  <!-- 克数可直接修改 -->
                   <input type="number" class="ing-weight-input" value="${item.amount_g}" onchange="updateItemWeight(${log.id}, ${itemIndex}, this.value)">
                   <span style="font-size:0.8rem;">g</span>
-                  <span class="ing-cost-tag">¥${itemCostStr}</span>
+                  <span class="ing-cost-tag">¥${itemCost.toFixed(2)}</span>
                   <button class="btn-danger-sm" onclick="deleteLogItem(${log.id}, ${itemIndex})">删除</button>
                 </div>
               </div>
@@ -544,11 +563,31 @@
         });
         htmlStr += '</div>';
 
+        dayTotalWeight += totalMealWeight;
+        dayTotalCost += totalMealCost;
+
+        if (statsContainer) {
+          statsContainer.innerHTML = `
+            <span class="meal-stats-badge">${totalMealWeight}g</span>
+            <span class="meal-stats-badge">¥${totalMealCost.toFixed(2)}</span>
+          `;
+        }
+
+        // 仅当有“预计划”未完成的食材时显示“点击完成”按钮，全完成或空时隐藏
+        if (btnComplete) {
+          btnComplete.style.display = hasPlannedItems ? 'inline-block' : 'none';
+        }
+
         container.innerHTML = htmlStr;
       });
+
+      const dayStatsEl = document.getElementById('day-summary-stats');
+      if (dayStatsEl) {
+        dayStatsEl.innerText = `今日: ${dayTotalWeight}g · ¥${dayTotalCost.toFixed(2)}`;
+      }
     }
 
-    // 可修改克数逻辑
+    // 修改食用克数
     async function updateItemWeight(logId, itemIndex, newWeightStr) {
       const newWeight = parseFloat(newWeightStr);
       if (isNaN(newWeight) || newWeight <= 0) return alert('请输入有效的克数！');
@@ -558,61 +597,49 @@
 
       log.items[itemIndex].amount_g = newWeight;
 
-      // 结合当前最新单价重新计算单项费用
-      const invItem = inventoryData.find(i => i.name === log.items[itemIndex].name);
-      const pricePerG = invItem ? (invItem.price_per_g || 0) : 0;
-      log.items[itemIndex].cost = newWeight * pricePerG;
-
       let newTotalW = 0;
-      let newTotalC = 0;
-      log.items.forEach(i => {
-        newTotalW += (i.amount_g || 0);
-        newTotalC += (i.cost || 0);
-      });
+      log.items.forEach(i => { newTotalW += (i.amount_g || 0); });
 
       await db.from('diet_logs').update({
         items: log.items,
-        total_weight_g: newTotalW,
-        total_cost: newTotalC
+        total_weight_g: newTotalW
       }).eq('id', logId);
 
       await refreshAll();
     }
 
-    // 整个餐别一键完成扣库
+    // 一键完成餐别扣库（遵循 FIFO 先进先出扣减）
     async function markMealCompleted(mealType) {
       const dayMealLogs = dietLogsData.filter(l => l.log_date === selectedDateStr && l.meal_type === mealType && l.status === 'planned');
-      if (dayMealLogs.length === 0) return alert(`【${mealType}】当前没有待完成的预计划！`);
+      if (dayMealLogs.length === 0) return;
 
       for (const log of dayMealLogs) {
         for (const item of (log.items || [])) {
-          const invItem = inventoryData.find(i => i.name === item.name);
-          if (invItem) {
-            const newAmount = invItem.amount_g - item.amount_g;
-            if (newAmount <= 0) {
-              await db.from('inventory').delete().eq('id', invItem.id);
+          let remainingNeed = item.amount_g;
+
+          // 按 ID 升序找最先入库的批次
+          const batches = inventoryData
+            .filter(i => i.name === item.name && i.amount_g > 0)
+            .sort((a, b) => a.id - b.id);
+
+          for (const batch of batches) {
+            if (remainingNeed <= 0) break;
+            const deductG = Math.min(remainingNeed, batch.amount_g);
+            const leftInBatch = batch.amount_g - deductG;
+
+            if (leftInBatch <= 0) {
+              await db.from('inventory').delete().eq('id', batch.id);
             } else {
-              await db.from('inventory').update({ amount_g: newAmount }).eq('id', invItem.id);
+              await db.from('inventory').update({ amount_g: leftInBatch }).eq('id', batch.id);
             }
+            remainingNeed -= deductG;
           }
         }
         await db.from('diet_logs').update({ status: 'completed' }).eq('id', log.id);
       }
 
-      alert(`已确认完成【${mealType}】，并同步扣除对应库存！`);
+      alert(`【${mealType}】已确认完成，并从库存中扣除对应食材！`);
       await refreshAll();
-    }
-
-    // 退回库存辅助函数
-    async function restoreInventoryItem(name, amountG, cost) {
-      const invItem = inventoryData.find(i => i.name === name);
-      if (invItem) {
-        const newAmount = invItem.amount_g + amountG;
-        await db.from('inventory').update({ amount_g: newAmount }).eq('id', invItem.id);
-      } else {
-        const pricePerG = (amountG > 0 && cost) ? (cost / amountG) : 0;
-        await db.from('inventory').insert([{ name: name, amount_g: amountG, price_per_g: pricePerG }]);
-      }
     }
 
     // 删除单项食材
@@ -623,8 +650,14 @@
       const itemToDelete = log.items[itemIndex];
       if (!confirm(`确定删除“${itemToDelete.name}”吗？`)) return;
 
+      // 如果是已完成的，自动按照原始克数与价格加回库存
       if (log.status === 'completed') {
-        await restoreInventoryItem(itemToDelete.name, itemToDelete.amount_g, itemToDelete.cost);
+        const invItem = inventoryData.find(i => i.name === itemToDelete.name);
+        if (invItem) {
+          await db.from('inventory').update({ amount_g: invItem.amount_g + itemToDelete.amount_g }).eq('id', invItem.id);
+        } else {
+          await db.from('inventory').insert([{ name: itemToDelete.name, amount_g: itemToDelete.amount_g, price_per_g: 0 }]);
+        }
       }
 
       const updatedItems = log.items.filter((_, idx) => idx !== itemIndex);
@@ -633,16 +666,11 @@
         await db.from('diet_logs').delete().eq('id', logId);
       } else {
         let newTotalWeight = 0;
-        let newTotalCost = 0;
-        updatedItems.forEach(i => {
-          newTotalWeight += (i.amount_g || 0);
-          newTotalCost += (i.cost || 0);
-        });
+        updatedItems.forEach(i => { newTotalWeight += (i.amount_g || 0); });
 
         await db.from('diet_logs').update({
           items: updatedItems,
-          total_weight_g: newTotalWeight,
-          total_cost: newTotalCost
+          total_weight_g: newTotalWeight
         }).eq('id', logId);
       }
 
@@ -661,7 +689,7 @@
       const container = document.getElementById('diet-items-container');
       const div = document.createElement('div');
       div.className = 'ingredient-input-row';
-      let optionsHtml = inventoryData.map(i => `<option value="${i.name}">${i.name}</option>`).join('');
+      let optionsHtml = getUniqueIngredientNames().map(name => `<option value="${name}">${name}</option>`).join('');
 
       div.innerHTML = `
         <input type="text" class="diet-item-name" placeholder="食材" value="${name}" list="inventory-options">
@@ -683,7 +711,6 @@
       (recipe.ingredients || []).forEach(i => addDietItemRow(i.name, i.amount_g));
     }
 
-    // 提交预计划饮食，若有未知食材，自动建立 0g 库存同步下拉列表
     async function submitDietLog() {
       const logDate = document.getElementById('diet-form-date').value;
       const mealType = document.getElementById('diet-meal-type').value;
@@ -693,7 +720,6 @@
 
       const usedItems = [];
       let totalWeightG = 0;
-      let totalCost = 0;
 
       for (let i = 0; i < nameInputs.length; i++) {
         const ingName = nameInputs[i].value.trim();
@@ -702,24 +728,13 @@
         if (ingName && !isNaN(ingAmount) && ingAmount > 0) {
           let invItem = inventoryData.find(item => item.name === ingName);
 
-          // 属于新食材，自动在 Supabase 新建占位，保证下拉选择可点击
+          // 属于新食材，自动在 Supabase 新建 0g 占位记录，保证以后下拉菜单直接能选中它！
           if (!invItem) {
-            const { data: newInv, error: invErr } = await db.from('inventory').insert([{
-              name: ingName,
-              amount_g: 0,
-              price_per_g: 0
-            }]).select();
-            if (!invErr && newInv && newInv.length > 0) {
-              invItem = newInv[0];
-            }
+            await db.from('inventory').insert([{ name: ingName, amount_g: 0, price_per_g: 0 }]);
           }
 
-          const pricePerG = invItem ? (invItem.price_per_g || 0) : 0;
-          const itemCost = ingAmount * pricePerG;
-
-          usedItems.push({ name: ingName, amount_g: ingAmount, cost: itemCost });
+          usedItems.push({ name: ingName, amount_g: ingAmount });
           totalWeightG += ingAmount;
-          totalCost += itemCost;
         }
       }
 
@@ -730,7 +745,7 @@
         meal_type: mealType,
         recipe_name: recipeSelect || '',
         total_weight_g: totalWeightG,
-        total_cost: totalCost,
+        total_cost: 0,
         items: usedItems,
         status: 'planned'
       }]);
@@ -742,7 +757,15 @@
       }
     }
 
-    // --- 2. 库存管理与损耗重算（总价不变原则） ---
+    // 获取历史上出现过的所有食材集合（用于下拉菜单自动补全）
+    function getUniqueIngredientNames() {
+      const set = new Set();
+      inventoryData.forEach(i => set.add(i.name));
+      dietLogsData.forEach(l => (l.items || []).forEach(i => set.add(i.name)));
+      return Array.from(set);
+    }
+
+    // --- 2. 库存管理与损耗重算 ---
     async function refreshInventory() {
       const { data, error } = await db.from('inventory').select('*').order('id', { ascending: false });
       if (error) return;
@@ -751,11 +774,20 @@
     }
 
     function refreshInventoryUI() {
-      // 刷新买菜入库表单中的可选择食材
       const invDatalist = document.getElementById('inv-existing-options');
       if (invDatalist) {
-        invDatalist.innerHTML = inventoryData.map(i => `<option value="${i.name}"></option>`).join('');
+        invDatalist.innerHTML = getUniqueIngredientNames().map(name => `<option value="${name}">${name}</option>`).join('');
       }
+
+      // 按食材名称汇总【现有库存】与【预计划使用量】
+      const aggregateMap = {};
+      inventoryData.forEach(item => {
+        if (!aggregateMap[item.name]) {
+          aggregateMap[item.name] = { name: item.name, amount_g: 0, batchesCount: 0 };
+        }
+        aggregateMap[item.name].amount_g += item.amount_g;
+        aggregateMap[item.name].batchesCount += 1;
+      });
 
       const plannedDemandMap = {};
       dietLogsData.filter(l => l.status === 'planned').forEach(log => {
@@ -764,10 +796,17 @@
         });
       });
 
+      // 预计划里包含了但库存完全没有的食材也要算出来
+      Object.keys(plannedDemandMap).forEach(name => {
+        if (!aggregateMap[name]) {
+          aggregateMap[name] = { name: name, amount_g: 0, batchesCount: 0 };
+        }
+      });
+
       const purchaseList = [];
       const normalList = [];
 
-      inventoryData.forEach(item => {
+      Object.values(aggregateMap).forEach(item => {
         const plannedG = plannedDemandMap[item.name] || 0;
         const diff = item.amount_g - plannedG;
         const itemObj = { ...item, plannedG, diff };
@@ -779,42 +818,21 @@
         }
       });
 
-      Object.keys(plannedDemandMap).forEach(name => {
-        const exists = inventoryData.some(i => i.name === name);
-        if (!exists) {
-          const plannedG = plannedDemandMap[name];
-          purchaseList.push({
-            id: 'missing_' + name,
-            name: name,
-            amount_g: 0,
-            price_per_g: 0,
-            plannedG: plannedG,
-            diff: -plannedG
-          });
-        }
-      });
-
-      // 待采购区渲染
+      // 渲染待采购区
       const purchaseCard = document.getElementById('purchase-card');
       if (purchaseList.length > 0) {
         purchaseCard.style.display = 'block';
         document.getElementById('purchase-list').innerHTML = purchaseList.map(item => {
           const shortageG = Math.abs(item.diff);
-          const estCost = item.price_per_g ? (shortageG * item.price_per_g).toFixed(2) : null;
+          const estCost = calculateFifoCost(item.name, shortageG);
 
           return `
-            <li class="item-row">
-              <div>
-                <strong>${item.name}</strong>
-                <div class="item-numbers-row" style="margin-top:4px;">
-                  <span class="num-actual">现有:${item.amount_g}g</span>
-                  <span class="num-planned">预需:${item.plannedG}g</span>
-                  <span class="num-diff-minus">缺口:${item.diff}g</span>
-                </div>
-                <div class="item-sub" style="color:#b91c1c; font-weight:bold;">
-                  缺口: ${shortageG}g ${estCost ? `(预计花 ¥${estCost})` : ''}
-                </div>
-              </div>
+            <li class="inventory-grid-row" style="background:#fff;">
+              <strong style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.name}</strong>
+              <span style="text-align:center;" class="num-actual">${item.amount_g}g</span>
+              <span style="text-align:center;" class="num-planned">${item.plannedG}g</span>
+              <span style="text-align:center;" class="num-diff-minus">${item.diff}g</span>
+              <span style="text-align:right; color:#b91c1c; font-weight:bold; font-size:0.75rem;">缺 ${shortageG}g</span>
             </li>
           `;
         }).join('');
@@ -828,58 +846,61 @@
 
       const listEl = document.getElementById('inventory-list');
       if (filteredNormalList.length === 0 && purchaseList.length === 0) {
-        listEl.innerHTML = '<li style="color:#9ca3af;font-size:0.85rem;padding:10px 0;">暂无相关库存~</li>';
+        listEl.innerHTML = '<li style="color:#9ca3af;font-size:0.85rem;padding:12px 0;text-align:center;">暂无相关库存~</li>';
         return;
       }
 
-      // 📱 极简行数据展示，无需重复“现有/预需/结余”文字
+      // 📱 Grid 网格严格对齐渲染
       listEl.innerHTML = filteredNormalList.map(item => `
-        <li class="item-row">
-          <strong style="font-size:0.9rem; flex:1;">${item.name}</strong>
-          
-          <div class="inventory-header-cols">
-            <span class="num-actual">${item.amount_g}g</span>
-            <span class="num-planned">${item.plannedG}g</span>
-            <span class="${item.diff >= 0 ? 'num-diff-plus' : 'num-diff-minus'}">
-              ${item.diff >= 0 ? '+' : ''}${item.diff}g
-            </span>
-          </div>
-
-          <div style="display:flex; gap:6px; align-items:center; margin-left:10px;">
-            <button class="btn-warn-sm" onclick="reportLoss(${item.id})">损耗</button>
-            <button class="btn-danger-sm" onclick="deleteInventory(${item.id})">删除</button>
+        <li class="inventory-grid-row">
+          <strong style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.name}</strong>
+          <span style="text-align:center;" class="num-actual">${item.amount_g}g</span>
+          <span style="text-align:center;" class="num-planned">${item.plannedG}g</span>
+          <span style="text-align:center;" class="${item.diff >= 0 ? 'num-diff-plus' : 'num-diff-minus'}">
+            ${item.diff >= 0 ? '+' : ''}${item.diff}g
+          </span>
+          <div style="display:flex; gap:4px; justify-content:flex-end;">
+            <button class="btn-warn-sm" onclick="reportLossByName('${item.name}')">损耗</button>
+            <button class="btn-danger-sm" onclick="deleteInventoryByName('${item.name}')">删除</button>
           </div>
         </li>
       `).join('');
     }
 
-    // 损耗扣减逻辑：基于“总价格不变”原则重新计算单价
-    async function reportLoss(id) {
-      const item = inventoryData.find(i => i.id === id);
-      if (!item) return;
+    // 损耗扣减：基于“总价不变，数量变少重算单价”原则！
+    async function reportLossByName(name) {
+      const batches = inventoryData.filter(i => i.name === name && i.amount_g > 0).sort((a, b) => a.id - b.id);
+      if (batches.length === 0) return alert('当前没有该食材的有效库存！');
 
-      const lossStr = prompt(`【${item.name}】当前库存为 ${item.amount_g}g，请输入损耗/报废的克数：`);
+      const totalGrams = batches.reduce((sum, b) => sum + b.amount_g, 0);
+      const lossStr = prompt(`【${name}】当前总库存为 ${totalGrams}g，请输入损耗/报废的克数：`);
       if (!lossStr) return;
-      const lossG = parseFloat(lossStr);
+      let lossG = parseFloat(lossStr);
 
       if (isNaN(lossG) || lossG <= 0) return alert('请输入有效克数！');
 
-      const oldTotalCost = (item.amount_g || 0) * (item.price_per_g || 0); // 计算总资产包价值
-      const remainingGrams = item.amount_g - lossG;
+      for (const batch of batches) {
+        if (lossG <= 0) break;
 
-      if (remainingGrams <= 0) {
-        alert(`损耗后库存为 0g，已自动清除该食材！`);
-        await db.from('inventory').delete().eq('id', id);
-      } else {
-        // 总花费不变，克数变少 -> 单价重算
-        const newPricePerG = oldTotalCost / remainingGrams;
-        await db.from('inventory').update({
-          amount_g: remainingGrams,
-          price_per_g: newPricePerG
-        }).eq('id', id);
+        const oldTotalCost = (batch.amount_g || 0) * (batch.price_per_g || 0); // 算出该批次总资产花费
+        if (lossG >= batch.amount_g) {
+          lossG -= batch.amount_g;
+          await db.from('inventory').delete().eq('id', batch.id);
+        } else {
+          const remainingGrams = batch.amount_g - lossG;
+          // 🔥 核心重算：总价不变 ÷ 剩余克数 = 最新单价！
+          const newPricePerG = oldTotalCost / remainingGrams;
 
-        alert(`已成功扣除 ${lossG}g 损耗！\n根据总成本不变原则，单位价格已更新。`);
+          await db.from('inventory').update({
+            amount_g: remainingGrams,
+            price_per_g: newPricePerG
+          }).eq('id', batch.id);
+
+          lossG = 0;
+        }
       }
+
+      alert(`已成功扣除损耗！根据总成本不变原则，单位价格已更新，饮食日志已重新折算准确费用！`);
       await refreshAll();
     }
 
@@ -890,30 +911,21 @@
 
       if (!name || isNaN(amountG) || isNaN(totalPrice) || amountG <= 0) return alert('请填入有效数据！');
 
-      const existing = inventoryData.find(i => i.name === name);
-      let newAmount = amountG;
-      let newPricePerG = totalPrice / amountG;
-
-      if (existing) {
-        const oldTotalCost = (existing.amount_g || 0) * (existing.price_per_g || 0);
-        newAmount = existing.amount_g + amountG;
-        newPricePerG = (oldTotalCost + totalPrice) / newAmount;
-        await db.from('inventory').update({ amount_g: newAmount, price_per_g: newPricePerG }).eq('id', existing.id);
-      } else {
-        await db.from('inventory').insert([{ name, amount_g: newAmount, price_per_g: newPricePerG }]);
-      }
+      const pricePerG = totalPrice / amountG;
+      // 每次买菜生成一个独立批次记录，完美支持 FIFO 先进先出与多批次价格！
+      await db.from('inventory').insert([{ name, amount_g: amountG, price_per_g: pricePerG }]);
 
       document.getElementById('inv-name').value = '';
       document.getElementById('inv-amount').value = '';
       document.getElementById('inv-price').value = '';
       alert('买菜入库成功！');
-      refreshInventory();
+      refreshAll();
     }
 
-    async function deleteInventory(id) {
-      if (confirm('确认删除该项库存？')) {
-        await db.from('inventory').delete().eq('id', id);
-        refreshInventory();
+    async function deleteInventoryByName(name) {
+      if (confirm(`确认清除“${name}”的所有库存记录？`)) {
+        await db.from('inventory').delete().eq('name', name);
+        refreshAll();
       }
     }
 
