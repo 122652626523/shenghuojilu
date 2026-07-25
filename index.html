@@ -29,29 +29,37 @@
     .panel { display: none; }
     .panel.active { display: block; }
 
-    /* 图一风格：日历栏 */
-    .calendar-bar { background: #fff; border-radius: 16px; padding: 12px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
-    .date-picker-row { display: flex; justify-content: space-between; align-items: center; }
+    /* 日历栏 */
+    .calendar-bar { background: #fff; border-radius: 16px; padding: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
     .date-display { font-weight: bold; font-size: 1.05rem; color: #111; display: flex; align-items: center; gap: 6px; }
-    .date-input-hidden { border: none; background: transparent; font-size: 0.9rem; color: var(--primary); font-weight: bold; cursor: pointer; outline: none; }
+    .date-input-hidden { border: none; background: transparent; font-size: 0.95rem; color: var(--primary); font-weight: bold; cursor: pointer; outline: none; }
 
-    .week-days { display: flex; justify-content: space-between; text-align: center; }
-    .day-item { flex: 1; padding: 6px 2px; border-radius: 10px; font-size: 0.75rem; color: var(--text-light); cursor: pointer; }
-    .day-item.active { background: var(--primary-light); color: var(--primary); font-weight: bold; }
-
-    /* 图一风格：餐别卡片 */
+    /* 餐别卡片 (图二样式) */
     .meal-section { background: #fff; border-radius: 16px; padding: 14px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
     .meal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid #f3f4f6; }
     .meal-title { font-weight: bold; font-size: 1rem; color: #111; display: flex; align-items: center; gap: 6px; }
     .meal-add-btn { background: var(--primary-light); color: var(--primary); border: none; padding: 4px 10px; border-radius: 12px; font-size: 0.78rem; font-weight: bold; cursor: pointer; }
 
-    .food-item-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #f0f0f0; }
-    .food-item-row:last-child { border-bottom: none; }
-    .food-name { font-weight: 500; font-size: 0.9rem; }
-    .food-sub { font-size: 0.75rem; color: var(--text-light); }
+    /* 图二：饮食条目与竖向食材列表 */
+    .food-card { background: #fafafa; border: 1px solid #edf2f7; border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; }
+    .food-card:last-child { margin-bottom: 0; }
+    
+    .food-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 6px; }
+    .food-title-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .food-name-title { font-weight: bold; font-size: 0.95rem; color: #1a202c; }
+    
+    .food-stats-summary { display: flex; gap: 8px; font-size: 0.78rem; font-weight: bold; }
+    .stat-badge-weight { background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 6px; }
+    .stat-badge-price { background: #fef3c7; color: #92400e; padding: 2px 6px; border-radius: 6px; }
+
+    /* 竖向显示的食材列表 (图二样式) */
+    .vertical-ingredients-list { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; padding-left: 4px; }
+    .vertical-ingredient-item { font-size: 0.85rem; color: #4a5568; display: flex; justify-content: space-between; align-items: center; }
+    .ing-name { font-weight: 600; color: #2d3748; }
+    .ing-detail { font-size: 0.78rem; color: #718096; }
 
     /* 状态标签 */
-    .status-badge { font-size: 0.72rem; padding: 2px 8px; border-radius: 10px; font-weight: bold; }
+    .status-badge { font-size: 0.7rem; padding: 2px 6px; border-radius: 8px; font-weight: bold; }
     .status-planned { background: #fef3c7; color: #92400e; }
     .status-completed { background: #dcfce7; color: #166534; }
 
@@ -65,11 +73,24 @@
     .row > * { flex: 1; }
 
     button.btn-primary { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 12px; font-size: 0.95rem; font-weight: bold; cursor: pointer; }
-    .btn-complete { background: var(--primary); color: white; border: none; padding: 5px 12px; border-radius: 10px; font-size: 0.78rem; font-weight: bold; cursor: pointer; }
+    .btn-complete { background: var(--primary); color: white; border: none; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; cursor: pointer; }
     .btn-danger-sm { background: #fee2e2; color: #dc2626; border: none; padding: 4px 8px; border-radius: 8px; font-size: 0.75rem; cursor: pointer; }
     .btn-warn-sm { background: #fef3c7; color: #b45309; border: none; padding: 4px 8px; border-radius: 8px; font-size: 0.75rem; cursor: pointer; }
 
-    /* 图三菜谱风格及自适应 */
+    /* 库存标签 (图一右侧新增结果) */
+    .item-list { list-style: none; }
+    .item-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f3f4f6; }
+    .badge-group { display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
+    .badge { padding: 2px 6px; border-radius: 8px; font-size: 0.72rem; font-weight: 500; }
+    .badge-actual { background: #e0f2fe; color: #0369a1; }
+    .badge-planned { background: #fef3c7; color: #92400e; }
+    .badge-result-pos { background: #dcfce7; color: #15803d; font-weight: bold; }
+    .badge-result-neg { background: #fee2e2; color: #b91c1c; font-weight: bold; }
+
+    .procurement-section { background: #fff5f5; border: 1px solid #fed7d7; border-radius: 14px; padding: 12px; margin-bottom: 14px; }
+    .procurement-title { font-weight: bold; color: #c53030; font-size: 0.92rem; margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
+
+    /* 菜谱样式 */
     .recipe-header-bar { display: flex; gap: 8px; margin-bottom: 10px; }
     .search-input { flex: 1; background: #fff; border-radius: 20px; border: 1px solid #e5e7eb; padding: 8px 16px; font-size: 0.85rem; }
     .btn-add-recipe { background: var(--primary); color: white; border: none; padding: 0 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; cursor: pointer; }
@@ -107,21 +128,12 @@
     .ingredient-input-row { display: flex; gap: 6px; margin-bottom: 8px; align-items: center; }
     .btn-remove-row { background: #fee2e2; color: #dc2626; border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: bold; cursor: pointer; flex-shrink: 0; }
     .btn-add-row { background: #f3f4f6; color: var(--text); border: 1px dashed #d1d5db; padding: 8px; border-radius: 8px; width: 100%; cursor: pointer; font-size: 0.82rem; margin-bottom: 10px; }
-
-    .item-list { list-style: none; }
-    .item-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f3f4f6; }
-    .item-sub { font-size: 0.75rem; color: var(--text-light); margin-top: 2px; }
-    .badge { padding: 2px 6px; border-radius: 8px; font-size: 0.72rem; font-weight: 500; }
-    .badge-actual { background: #e0f2fe; color: #0369a1; }
-    .badge-planned { background: #fef3c7; color: #92400e; }
-    .badge-need { background: #fee2e2; color: #b91c1c; }
   </style>
 </head>
 <body>
 
   <header>🥗 生活记录 - 饮食与库存</header>
 
-  <!-- 顶部 3 大板块 -->
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('diet')">📅 饮食日历</button>
     <button class="tab-btn" onclick="switchTab('inventory')">🛒 买菜/库存</button>
@@ -132,15 +144,11 @@
 
     <!-- 1. 饮食日历（包含预扣除、记录与按日期查询） -->
     <div id="panel-diet" class="panel active">
-      
-      <!-- 日历头部 -->
       <div class="calendar-bar">
-        <div class="date-picker-row">
-          <div class="date-display">
-            📅 <input type="date" id="diet-date-picker" class="date-input-hidden" onchange="onDateChange()">
-          </div>
-          <button class="meal-add-btn" onclick="openAddDietModal()">+ 预安排/记录饮食</button>
+        <div class="date-display">
+          📅 <input type="date" id="diet-date-picker" class="date-input-hidden" onchange="onDateChange()">
         </div>
+        <button class="meal-add-btn" onclick="openAddDietModal()">+ 预安排/记录饮食</button>
       </div>
 
       <!-- 早餐 -->
@@ -178,11 +186,17 @@
         </div>
         <div id="meal-list-加餐">加载中...</div>
       </div>
-
     </div>
 
-    <!-- 2. 买菜 / 库存（含预扣除计算与损耗扣减） -->
+    <!-- 2. 买菜 / 库存（含【需要采购区】与【结余/结果】） -->
     <div id="panel-inventory" class="panel">
+      
+      <!-- 最顶部：需要采购区 (结余为负数的物品自动提至此处) -->
+      <div id="procurement-container" class="procurement-section" style="display: none;">
+        <div class="procurement-title">🚨 需要采购区 (缺货物品)</div>
+        <ul id="procurement-list" class="item-list"></ul>
+      </div>
+
       <div class="card">
         <div class="card-title">🛒 买菜入库</div>
         <div class="form-group">
@@ -203,7 +217,7 @@
       </div>
 
       <div class="card">
-        <div class="card-title">📦 库存明细（含预扣除与补货需求）</div>
+        <div class="card-title">📦 现有库存与预扣除明细</div>
         <ul id="inventory-list" class="item-list">加载中...</ul>
       </div>
     </div>
@@ -402,13 +416,13 @@
       renderDietPage();
     }
 
-    // --- 饮食日志/日历与预扣除 ---
+    // --- 饮食日历渲染 (按图二风格：总克重、合计使用价格、竖着显示食材) ---
     async function refreshDietLogs() {
       const { data, error } = await db.from('diet_logs').select('*').order('id', { ascending: false });
       if (error) return;
       dietLogsData = data || [];
       renderDietPage();
-      refreshInventoryUI(); // 重新计算预扣除量
+      refreshInventoryUI();
     }
 
     function renderDietPage() {
@@ -425,23 +439,42 @@
         }
 
         container.innerHTML = mealLogs.map(log => {
-          const itemsStr = (log.items || []).map(i => `${i.name}${i.amount_g}g`).join(' · ');
           const isPlanned = log.status === 'planned';
           
+          // 图二效果：食材竖向排列 HTML
+          const ingredientsVerticalHtml = (log.items || []).map(i => `
+            <div class="vertical-ingredient-item">
+              <span class="ing-name">• ${i.name}</span>
+              <span class="ing-detail">${i.amount_g}g (${(i.cost || 0).toFixed(2)}元)</span>
+            </div>
+          `).join('');
+
           return `
-            <div class="food-item-row">
-              <div>
-                <div class="food-name">
-                  ${log.recipe_name || '自拟餐'}
-                  <span class="status-badge ${isPlanned ? 'status-planned' : 'status-completed'}">
-                    ${isPlanned ? '预计划' : '已完成'}
-                  </span>
+            <div class="food-card">
+              <div class="food-card-top">
+                <div>
+                  <div class="food-title-group">
+                    <span class="food-name-title">${log.recipe_name || '自拟餐点'}</span>
+                    <span class="status-badge ${isPlanned ? 'status-planned' : 'status-completed'}">
+                      ${isPlanned ? '预计划' : '已完成'}
+                    </span>
+                  </div>
+                  <!-- 图二要求：顶部显示总克重和合计使用的价格 -->
+                  <div class="food-stats-summary" style="margin-top: 4px;">
+                    <span class="stat-badge-weight">总重: ${log.total_weight_g}g</span>
+                    <span class="stat-badge-price">合计使用: ¥${(log.total_cost || 0).toFixed(2)}</span>
+                  </div>
                 </div>
-                <div class="food-sub">${itemsStr} (共${log.total_weight_g}g)</div>
+
+                <div style="display:flex; gap:6px; align-items:center;">
+                  ${isPlanned ? `<button class="btn-complete" onclick="markLogCompleted(${log.id})">点击完成</button>` : ''}
+                  <button class="btn-danger-sm" onclick="deleteDietLog(${log.id})">删除</button>
+                </div>
               </div>
-              <div style="display:flex; gap:6px; align-items:center;">
-                ${isPlanned ? `<button class="btn-complete" onclick="markLogCompleted(${log.id})">点击完成</button>` : ''}
-                <button class="btn-danger-sm" onclick="deleteDietLog(${log.id})">删除</button>
+
+              <!-- 图二要求：竖着显示使用的食材 -->
+              <div class="vertical-ingredients-list">
+                ${ingredientsVerticalHtml}
               </div>
             </div>
           `;
@@ -483,7 +516,6 @@
       (recipe.ingredients || []).forEach(i => addDietItemRow(i.name, i.amount_g));
     }
 
-    // 保存预安排饮食
     async function submitDietLog() {
       const logDate = document.getElementById('diet-form-date').value;
       const mealType = document.getElementById('diet-meal-type').value;
@@ -519,7 +551,7 @@
         total_weight_g: totalWeightG,
         total_cost: totalCost,
         items: usedItems,
-        status: 'planned' // 默认为预计划，不立刻从库存扣除
+        status: 'planned'
       }]);
 
       if (error) alert('保存失败：' + error.message);
@@ -529,18 +561,15 @@
       }
     }
 
-    // 点击“完成” -> 正式触发库存扣除 & 清理 0 库存
     async function markLogCompleted(logId) {
       const log = dietLogsData.find(l => l.id === logId);
       if (!log) return;
 
-      // 扣除库存
       for (const item of (log.items || [])) {
         const invItem = inventoryData.find(i => i.name === item.name);
         if (invItem) {
           const newAmount = invItem.amount_g - item.amount_g;
           if (newAmount <= 0) {
-            // 自动清理 0 库存
             await db.from('inventory').delete().eq('id', invItem.id);
           } else {
             await db.from('inventory').update({ amount_g: newAmount }).eq('id', invItem.id);
@@ -548,9 +577,8 @@
         }
       }
 
-      // 更新状态为已完成
       await db.from('diet_logs').update({ status: 'completed' }).eq('id', logId);
-      alert('已标记为完成，并从库存中扣除相应克数！');
+      alert('已标记完成，并从真实库存中扣除相应克数！');
       await refreshAll();
     }
 
@@ -561,7 +589,7 @@
       }
     }
 
-    // --- 库存管理（预扣除计算 & 损耗功能） ---
+    // --- 库存管理（图一：计算结余，负数自动提至【需要采购区】） ---
     async function refreshInventory() {
       const { data, error } = await db.from('inventory').select('*').order('id', { ascending: false });
       if (error) return;
@@ -571,12 +599,10 @@
 
     function refreshInventoryUI() {
       const listEl = document.getElementById('inventory-list');
-      if (inventoryData.length === 0) {
-        listEl.innerHTML = '<li style="color:#9ca3af;font-size:0.85rem;">库存为空~</li>';
-        return;
-      }
+      const procurementContainer = document.getElementById('procurement-container');
+      const procurementListEl = document.getElementById('procurement-list');
 
-      // 计算全量“预计划”扣减量
+      // 汇总所有“预计划”的总需克数
       const plannedDemandMap = {};
       dietLogsData.filter(l => l.status === 'planned').forEach(log => {
         (log.items || []).forEach(i => {
@@ -584,30 +610,69 @@
         });
       });
 
-      listEl.innerHTML = inventoryData.map(item => {
-        const plannedG = plannedDemandMap[item.name] || 0;
-        const needToBuyG = Math.max(0, plannedG - item.amount_g);
+      // 收集所有食材名称（包含已有的和仅有预计划需求的）
+      const allNames = Array.from(new Set([...inventoryData.map(i => i.name), ...Object.keys(plannedDemandMap)]));
 
-        return `
+      let normalHtml = '';
+      let procurementHtml = '';
+      let hasProcurementItems = false;
+
+      allNames.forEach(name => {
+        const invItem = inventoryData.find(i => i.name === name);
+        const currentG = invItem ? invItem.amount_g : 0;
+        const plannedG = plannedDemandMap[name] || 0;
+        const resultG = currentG - plannedG; // 图一红框：现有 - 预需 的计算结果
+
+        const isNegative = resultG < 0;
+
+        const badgeHtml = `
+          <div class="badge-group">
+            <span class="badge badge-actual">现有:${currentG}g</span>
+            <span class="badge badge-planned">预需:${plannedG}g</span>
+            <span class="badge ${isNegative ? 'badge-result-neg' : 'badge-result-pos'}">
+              ${isNegative ? `结果:${resultG}g (缺${Math.abs(resultG)}g)` : `结果:+${resultG}g`}
+            </span>
+          </div>
+        `;
+
+        const rowHtml = `
           <li class="item-row">
             <div>
-              <strong>${item.name}</strong>
-              <div style="display:flex; gap:4px; margin-top:4px;">
-                <span class="badge badge-actual">现有:${item.amount_g}g</span>
-                <span class="badge badge-planned">预需:${plannedG}g</span>
-                ${needToBuyG > 0 ? `<span class="badge badge-need">需买:${needToBuyG}g</span>` : ''}
-              </div>
+              <strong>${name}</strong>
+              ${badgeHtml}
             </div>
             <div style="display:flex; gap:6px; align-items:center;">
-              <button class="btn-warn-sm" onclick="reportLoss(${item.id})">损耗</button>
-              <button class="btn-danger-sm" onclick="deleteInventory(${item.id})">删除</button>
+              ${invItem ? `<button class="btn-warn-sm" onclick="reportLoss(${invItem.id})">损耗</button>` : ''}
+              ${invItem ? `<button class="btn-danger-sm" onclick="deleteInventory(${invItem.id})">删除</button>` : ''}
             </div>
           </li>
         `;
-      }).join('');
+
+        // 核心要求：如果结果是负数，放到最上面的需要采购区
+        if (isNegative) {
+          procurementHtml += rowHtml;
+          hasProcurementItems = true;
+        } else if (invItem) {
+          normalHtml += rowHtml;
+        }
+      });
+
+      // 采购区显示与否
+      if (hasProcurementItems) {
+        procurementContainer.style.display = 'block';
+        procurementListEl.innerHTML = procurementHtml;
+      } else {
+        procurementContainer.style.display = 'none';
+        procurementListEl.innerHTML = '';
+      }
+
+      if (normalHtml === '') {
+        listEl.innerHTML = '<li style="color:#9ca3af;font-size:0.85rem;">暂无充裕库存食材~</li>';
+      } else {
+        listEl.innerHTML = normalHtml;
+      }
     }
 
-    // 手动录入损耗
     async function reportLoss(id) {
       const item = inventoryData.find(i => i.id === id);
       if (!item) return;
